@@ -71,6 +71,35 @@ Sebelum Konfigurasi Nginx, buatlah domain / subdomain untuk backendmu
 Konfigurasi Nginx di (/etc/nginx/sites-available/yourConfiguration):
 ```nginx
 server {
+    listen 80;
+    server_name yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+Jalankan Nginx:
+```bash
+sudo ln -s /etc/nginx/sites-available/yourConfiguration /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+Aktifkan HTTPS:
+```bash
+sudo certbot --nginx -d yourdomain.com
+```
+
+Edit Konfigurasi Nginx menjadi:
+```nginx
+server {
     server_name yourdomain.com;
 
     listen 443 ssl; # managed by Certbot
@@ -100,17 +129,6 @@ server {
     }
 }
 
-```
-Jalankan Nginx:
-```bash
-sudo ln -s /etc/nginx/sites-available/yourConfiguration /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-Aktifkan HTTPS:
-```bash
-sudo certbot --nginx -d yourdomain.com
 ```
 
 ---
