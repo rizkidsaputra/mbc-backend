@@ -1,15 +1,19 @@
-import express from "express";
-import nodemailer from "nodemailer";
-import cors from "cors";
-import dotenv from "dotenv";
+const express = require("express");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN || "*", // Saat deploy: isi dengan domain React
-}));
+
 app.use(express.json());
+
+// Aktifkan kode ini jika anda menjalankannya di lokal tanpa deploy ke vps
+//app.use(cors({
+//  origin: process.env.FRONTEND_ORIGIN || "*", 
+//}));
+//app.use(express.json());
 
 app.post("/api/send-email", async (req, res) => {
   const { name, email, message } = req.body;
@@ -27,9 +31,15 @@ app.post("/api/send-email", async (req, res) => {
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: "rizkidsaputra9@gmail.com",
+    to: "rizkidsaputra9@gmail.com", //Ganti Ke email mu
     subject: `Pesan dari ${name}`,
-    text: `From: ${name} <${email}>\n\n${message}`,
+    text: `
+From   : ${name} <${email}>
+Pesan  : ${message}
+
+Dikirim dari: ${req.headers.origin || "Unknown"}
+Waktu kirim : ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
+    `.trim(),
     replyTo: email,
   };
 
@@ -44,3 +54,4 @@ app.post("/api/send-email", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
