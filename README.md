@@ -67,6 +67,7 @@ sudo apt install nginx certbot python3-certbot-nginx -y
 ```
 
 Sebelum Konfigurasi Nginx, buatlah domain / subdomain untuk backendmu
+
 Konfigurasi Nginx di (/etc/nginx/sites-available/yourConfiguration):
 ```nginx
 server {
