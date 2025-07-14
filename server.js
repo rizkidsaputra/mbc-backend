@@ -9,11 +9,12 @@ const app = express();
 
 app.use(express.json());
 
-// Aktifkan kode ini jika anda menjalankannya di lokal tanpa deploy ke vps
-//app.use(cors({
-//  origin: process.env.FRONTEND_ORIGIN || "*", 
-//}));
-//app.use(express.json());
+// Matikan kode ini jika anda ingin deploy di vps
+app.use(cors({
+  origin: process.env.FRONTEND_ORIGIN || "*", 
+}));
+app.use(express.json());
+// -------------------------------------------
 
 app.post("/api/send-email", async (req, res) => {
   const { name, email, message } = req.body;
